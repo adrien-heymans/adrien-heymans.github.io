@@ -1,109 +1,587 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Adrien Heymans – Projects</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      margin: 0;
-      background: #f9fafb;
-      color: #222;
-      line-height: 1.6;
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Adrien Heymans — Projects & Playground</title>
+<meta name="color-scheme" content="light dark">
+
+<style>
+  :root{
+    --bg: #f6f7fb;
+    --surface: #ffffff;
+    --text: #0f172a;
+    --subtext:#475569;
+    --primary:#2962ff;
+    --primary-ink:#ffffff;
+    --accent:#00c4b3;
+    --muted:#e2e8f0;
+    --chip:#eef2ff;
+    --radius: 16px;           /* live-tweakable via slider */
+    --elev-1: 0 1px 2px rgba(0,0,0,.06), 0 1px 1px rgba(0,0,0,.04);
+    --elev-2: 0 6px 16px rgba(0,0,0,.10), 0 2px 4px rgba(0,0,0,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0b1220; --surface:#0f172a; --text:#e5e7eb; --subtext:#9ca3af;
+      --muted:#1f2937; --chip:#111827; --primary:#5b8aff; --primary-ink:#101522;
+      --elev-1: 0 1px 2px rgba(0,0,0,.35), 0 1px 1px rgba(0,0,0,.25);
+      --elev-2: 0 8px 20px rgba(0,0,0,.45), 0 2px 6px rgba(0,0,0,.35);
     }
-    header {
-      text-align: center;
-      padding: 4rem 1rem 2rem;
-    }
-    header img {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      margin-bottom: 1rem;
-    }
-    header h1 {
-      margin: 0.5rem 0 0;
-      font-size: 2rem;
-    }
-    header p {
-      color: #555;
-    }
-    main {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 1.5rem 4rem;
-    }
-    h2 {
-      border-bottom: 2px solid #eee;
-      padding-bottom: 0.5rem;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    li {
-      background: white;
-      margin: 1rem 0;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      transition: transform 0.1s ease;
-    }
-    li:hover {
-      transform: scale(1.01);
-    }
-    a {
-      text-decoration: none;
-      color: #0366d6;
-      font-weight: 600;
-    }
-    footer {
-      text-align: center;
-      padding: 2rem;
-      color: #777;
-      font-size: 0.9rem;
-    }
-  </style>
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+    background: var(--bg); color: var(--text); line-height:1.6;
+  }
+  a{color:var(--primary); text-decoration:none}
+  a:hover{text-decoration:underline}
+  .container{max-width:1100px; margin-inline:auto; padding:0 20px}
+
+  /* Top App Bar */
+  header.navbar{
+    position: sticky; top:0; z-index:100;
+    backdrop-filter: saturate(120%) blur(8px);
+    background: color-mix(in srgb, var(--surface) 75%, transparent);
+    border-bottom: 1px solid var(--muted);
+  }
+  .nav-inner{display:flex; align-items:center; justify-content:space-between; height:64px}
+  .brand{display:flex; gap:.6rem; align-items:center; font-weight:700}
+  .brand .logo{
+    width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent));
+    box-shadow: var(--elev-1);
+  }
+  nav ul{display:flex; gap:16px; list-style:none; padding:0; margin:0}
+  nav a{padding:8px 10px; border-radius:12px}
+  nav a.active{background:var(--chip)}
+  .icon-btn{
+    border:0; background:transparent; width:40px; height:40px; border-radius:50%;
+    display:grid; place-items:center; cursor:pointer; position:relative; overflow:hidden;
+  }
+  /* Ripple */
+  .ripple{position:absolute; border-radius:50%; transform:scale(0); animation:ripple .6s linear; background: color-mix(in srgb, var(--text) 18%, transparent)}
+  @keyframes ripple{to{transform:scale(4); opacity:0}}
+
+  /* Hero */
+  section{scroll-margin-top:80px}
+  .hero{
+    padding:64px 0 24px;
+    background:
+      radial-gradient(1200px 400px at 50% -200px, color-mix(in srgb, var(--primary) 18%, transparent), transparent 70%),
+      linear-gradient(to bottom, color-mix(in srgb, var(--primary) 6%, transparent), transparent);
+  }
+  .hero .grid{display:grid; grid-template-columns: 1.2fr .8fr; gap:28px}
+  @media (max-width:900px){.hero .grid{grid-template-columns:1fr}}
+  .headline{font-size:clamp(28px, 4vw, 44px); line-height:1.15; margin:8px 0 8px}
+  .subhead{color:var(--subtext); max-width:60ch}
+  .chip{
+    display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px;
+    background:var(--chip); border:1px solid var(--muted); font-size:.9rem;
+  }
+  .hero-card{
+    background:var(--surface); border-radius:var(--radius); box-shadow:var(--elev-2); padding:18px;
+    display:flex; flex-direction:column; gap:14px; position:relative; overflow:hidden;
+  }
+  .avatar{width:64px; height:64px; border-radius:50%; box-shadow:var(--elev-1)}
+  .actions{display:flex; gap:10px; flex-wrap:wrap}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:14px;
+    border:1px solid var(--muted); background:var(--surface); cursor:pointer; font-weight:600; position:relative; overflow:hidden;
+  }
+  .btn.primary{background:var(--primary); color:var(--primary-ink); border-color: color-mix(in srgb, var(--primary) 60%, var(--muted))}
+  .btn:hover{filter:brightness(1.02)}
+  .metrics{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px}
+  .metric{
+    background:var(--chip); border:1px solid var(--muted); border-radius:12px; padding:10px 12px; text-align:center
+  }
+  .metric .big{font-weight:800; font-size:1.15rem}
+
+  /* Section headings */
+  .section-title{font-size:1.6rem; margin:18px 0 6px}
+  .section-sub{color:var(--subtext); margin:0 0 18px}
+
+  /* Cards grid */
+  .grid{display:grid; gap:16px}
+  .cards{grid-template-columns: repeat(3,minmax(0,1fr))}
+  @media (max-width:1000px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:650px){.cards{grid-template-columns:1fr}}
+
+  .card{
+    background:var(--surface); border:1px solid var(--muted); border-radius:var(--radius); box-shadow:var(--elev-1);
+    padding:16px; display:flex; flex-direction:column; gap:10px; position:relative; overflow:hidden
+  }
+  .card:hover{box-shadow:var(--elev-2)}
+  .card small{color:var(--subtext)}
+  .tag{display:inline-block; font-size:.72rem; padding:4px 8px; border-radius:999px; background:var(--chip); border:1px solid var(--muted); margin-right:6px}
+
+  /* Controls row */
+  .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:8px 0 10px}
+  .input, select{
+    padding:10px 12px; border-radius:12px; border:1px solid var(--muted); background:var(--surface); color:var(--text)
+  }
+
+  /* Playground tabs */
+  .tabs{display:flex; gap:8px; margin:12px 0}
+  .tab{padding:8px 12px; border-radius:999px; border:1px solid var(--muted); background:var(--chip); cursor:pointer}
+  .tab.active{background:var(--primary); color:var(--primary-ink); border-color: color-mix(in srgb, var(--primary) 60%, var(--muted))}
+  .panel{display:none}
+  .panel.active{display:block}
+  textarea, .mono{
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  }
+  textarea{
+    width:100%; min-height:120px; padding:12px; border-radius:12px; border:1px solid var(--muted); background:var(--surface); color:var(--text)
+  }
+  pre{
+    margin:0; padding:12px; background:var(--chip); border:1px solid var(--muted); border-radius:12px; overflow:auto
+  }
+
+  /* Footer + FAB */
+  footer{padding:28px 0 40px; color:var(--subtext); text-align:center}
+  .fab{
+    position:fixed; right:20px; bottom:20px; width:56px; height:56px; border-radius:50%;
+    background:var(--primary); color:var(--primary-ink); border:0; box-shadow:var(--elev-2); cursor:pointer
+  }
+</style>
 </head>
 <body>
-  <header>
-    <!-- optional profile picture -->
-    <img src="https://avatars.githubusercontent.com/u/000000?v=4" alt="Profile Picture">
-    <h1>Adrien Heymans</h1>
-    <p>Software projects, experiments & ideas</p>
-    <p>
-      <a href="https://github.com/adrienheymans" target="_blank">GitHub</a> ·
-      <a href="https://www.linkedin.com/in/adrienheymans" target="_blank">LinkedIn</a>
-    </p>
-  </header>
+<header class="navbar">
+  <div class="container nav-inner">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <span>Adrien Heymans</span>
+    </div>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="#about" class="navlink active">About</a></li>
+        <li><a href="#projects" class="navlink">Projects</a></li>
+        <li><a href="#playground" class="navlink">Playground</a></li>
+        <li><a href="#contact" class="navlink">Contact</a></li>
+      </ul>
+    </nav>
+    <button id="themeToggle" class="icon-btn" title="Toggle theme" aria-label="Toggle theme">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</header>
 
-  <main>
-    <h2>GitHub Projects</h2>
-    <ul id="projects">
-      <li>Loading projects...</li>
-    </ul>
-  </main>
+<!-- HERO / ABOUT -->
+<section id="about" class="hero">
+  <div class="container">
+    <div class="grid">
+      <div>
+        <span class="chip">👋 Hi, I’m Adrien — builder & PM</span>
+        <h1 class="headline">I ship clean interfaces, thoughtful data tools, and playful experiments.</h1>
+        <p class="subhead">Currently at uOttawa. I enjoy AI, dashboards, dev tooling, and making useful things fast.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://github.com/adrienheymans" target="_blank" rel="noopener">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.1.82-.26.82-.58V21.2c-3.34.73-4.04-1.6-4.04-1.6-.55-1.38-1.35-1.75-1.35-1.75-1.1-.76.08-.75.08-.75 1.22.08 1.86 1.25 1.86 1.25 1.08 1.85 2.82 1.32 3.51 1 .11-.8.43-1.32.78-1.62-2.66-.3-5.46-1.33-5.46-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.5.12-3.12 0 0 1-.32 3.3 1.23a11.45 11.45 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.62.24 2.82.12 3.12.78.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.63-5.47 5.93.44.38.83 1.12.83 2.26v3.35c0 .32.21.69.83.57A12 12 0 0 0 12 .5Z"/></svg>
+            GitHub
+          </a>
+          <a class="btn" href="#projects">See projects</a>
+          <a class="btn" href="#playground">Try a widget</a>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div style="display:flex; gap:12px; align-items:center">
+          <img class="avatar" src="https://avatars.githubusercontent.com/u/583231?v=4" alt="Profile avatar">
+          <div>
+            <strong>Based in Ottawa</strong><br>
+            <small>Building AI chatbots, Power BI, and clean UIs.</small>
+          </div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><div class="big" id="m-repos">—</div><small>Public repos</small></div>
+          <div class="metric"><div class="big" id="m-stars">—</div><small>Total stars</small></div>
+          <div class="metric"><div class="big" id="m-followers">—</div><small>Followers</small></div>
+        </div>
+        <div>
+          <span class="tag">TypeScript</span>
+          <span class="tag">React-Native</span>
+          <span class="tag">Power BI</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">AI</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <footer>
-    © <span id="year"></span> Adrien Heymans
-  </footer>
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <h2 class="section-title">Projects</h2>
+    <p class="section-sub">A selection of public repos. Filter and sort to explore.</p>
 
-  <script>
-    // Update footer year
-    document.getElementById('year').textContent = new Date().getFullYear();
+    <div class="controls">
+      <input id="search" class="input" placeholder="Search repositories…" />
+      <select id="sort">
+        <option value="updated">Sort: Recently updated</option>
+        <option value="created">Sort: Newest</option>
+        <option value="stars">Sort: Most stars</option>
+        <option value="name">Sort: Name A–Z</option>
+      </select>
+      <label class="chip" title="Hide forks">
+        <input type="checkbox" id="hideForks" checked style="accent-color:var(--primary); margin-right:6px"> Hide forks
+      </label>
+    </div>
 
-    // Fetch your public GitHub repos
-    fetch("https://api.github.com/users/adrienheymans/repos?sort=updated")
-      .then(res => res.json())
-      .then(data => {
-        const list = document.getElementById("projects");
-        list.innerHTML = "";
-        data
-          .filter(repo => !repo.fork) // ignore forks
-          .forEach(repo => {
-            const li = document.createElement("li");
-            li.innerHTML = `
-              <a href="${repo.html_url}" target="_blank">${repo.name}</a>
-              <p>${repo.description || "No description provided."}</p>
-              <small>★ ${repo.stargazers_count} · Updated ${new Date(repo.updated_at).toLocale
+    <div id="repoGrid" class="grid cards" aria-live="polite">
+      <div class="card">Loading repositories…</div>
+    </div>
+  </div>
+</section>
+
+<!-- PLAYGROUND -->
+<section id="playground">
+  <div class="container">
+    <h2 class="section-title">Playground</h2>
+    <p class="section-sub">Tiny tools to try right in the page.</p>
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-tab="json">JSON Formatter</button>
+      <button class="tab" data-tab="password">Password Strength</button>
+      <button class="tab" data-tab="base64">Base64 Encode/Decode</button>
+      <button class="tab" data-tab="theme">Live UI Tweaks</button>
+    </div>
+
+    <!-- JSON -->
+    <div class="panel active" id="panel-json" role="tabpanel" aria-label="JSON Formatter">
+      <div class="grid" style="grid-template-columns:1fr 1fr">
+        <div class="card">
+          <strong>Input (JSON)</strong>
+          <textarea id="json-in" placeholder='{"hello":"world","arr":[1,2,3]}'></textarea>
+          <div class="actions">
+            <button class="btn primary" id="format-json">Format</button>
+            <button class="btn" id="minify-json">Minify</button>
+            <button class="btn" id="copy-json">Copy output</button>
+          </div>
+        </div>
+        <div class="card">
+          <strong>Output</strong>
+          <pre id="json-out" class="mono" tabindex="0" aria-live="polite"></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Password -->
+    <div class="panel" id="panel-password" role="tabpanel" aria-label="Password Strength">
+      <div class="card">
+        <label><strong>Password</strong></label>
+        <input id="pw" class="input" type="password" placeholder="Type a password…" />
+        <div class="grid" style="grid-template-columns:1fr 3fr; gap:10px; align-items:center; margin-top:8px">
+          <div>Strength:</div>
+          <div>
+            <div id="bar" style="height:10px; border-radius:999px; background:var(--muted); overflow:hidden">
+              <div id="barf" style="height:100%; width:0; background:var(--accent)"></div>
+            </div>
+            <small id="pw-label" class="subtext">—</small>
+          </div>
+        </div>
+        <div style="margin-top:10px">
+          <span class="tag" id="rule-length">≥ 12 chars</span>
+          <span class="tag" id="rule-mix">Aa + 0-9 + symbol</span>
+          <span class="tag" id="rule-unique">No repeats</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Base64 -->
+    <div class="panel" id="panel-base64" role="tabpanel" aria-label="Base64">
+      <div class="grid" style="grid-template-columns:1fr 1fr">
+        <div class="card">
+          <strong>Text</strong>
+          <textarea id="b64-in" placeholder="Hello, world!"></textarea>
+          <div class="actions">
+            <button class="btn primary" id="encode">Encode →</button>
+            <button class="btn" id="decode">← Decode</button>
+          </div>
+        </div>
+        <div class="card">
+          <strong>Result</strong>
+          <pre id="b64-out" class="mono"></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Theme / UI Tweaks -->
+    <div class="panel" id="panel-theme" role="tabpanel" aria-label="Live UI Tweaks">
+      <div class="grid" style="grid-template-columns:1fr 1fr">
+        <div class="card">
+          <strong>Card corner radius</strong>
+          <input id="radius" type="range" min="6" max="28" value="16" style="width:100%">
+          <small>Live updates via CSS variable <code>--radius</code>.</small>
+        </div>
+        <div class="card">
+          <strong>Preview</strong>
+          <div class="grid cards">
+            <div class="card"><b>Tile</b><br><small>Radius mirrors the slider.</small></div>
+            <div class="card"><b>Tile</b><br><small>Material-ish shadows & hover.</small></div>
+            <div class="card"><b>Tile</b><br><small>Accessible contrast out of the box.</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <h2 class="section-title">Contact</h2>
+    <p class="section-sub">Open to interesting problems, collaborations, and good coffee.</p>
+    <div class="grid" style="grid-template-columns:1.2fr .8fr">
+      <div class="card">
+        <strong>Get in touch</strong>
+        <p>Email is best. I usually reply within a day.</p>
+        <div class="actions">
+          <a class="btn primary" href="mailto:adrien@example.com">Email me</a>
+          <a class="btn" href="https://www.linkedin.com/in/adrienheymans" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="btn" href="https://github.com/adrienheymans" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+      <div class="card">
+        <strong>At a glance</strong>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:6px">
+          <span class="tag">React</span><span class="tag">Node</span><span class="tag">TypeScript</span>
+          <span class="tag">Power BI</span><span class="tag">LLMs</span><span class="tag">APIs</span>
+        </div>
+        <small style="color:var(--subtext)">© <span id="year"></span> — CC BY-NC 4.0</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    Crafted with semantic HTML, CSS variables, and vanilla JS. No dependencies.
+  </div>
+</footer>
+
+<button id="toTop" class="fab" title="Back to top" aria-label="Back to top">↑</button>
+
+<script>
+  // ===== Helpers =====
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+
+  // Ripple effect for buttons
+  function attachRipples(root=document){
+    root.addEventListener('click', e=>{
+      const t = e.target.closest('.btn,.icon-btn');
+      if(!t) return;
+      const r = document.createElement('span');
+      const rect = t.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      r.className='ripple'; r.style.width=r.style.height = size+'px';
+      r.style.left = (e.clientX-rect.left - size/2)+'px';
+      r.style.top  = (e.clientY-rect.top  - size/2)+'px';
+      t.appendChild(r);
+      setTimeout(()=>r.remove(), 600);
+    });
+  }
+  attachRipples();
+
+  // Smooth scroll & scrollspy
+  $$('.navlink').forEach(a=>{
+    a.addEventListener('click', ev=>{
+      ev.preventDefault();
+      document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+  const sections = $$('#about,#projects,#playground,#contact');
+  const linksMap = Object.fromEntries($$('.navlink').map(a=>[a.getAttribute('href'), a]));
+  const io = new IntersectionObserver(entries=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting){
+        $$('.navlink').forEach(x=>x.classList.remove('active'));
+        const id = '#'+en.target.id;
+        linksMap[id]?.classList.add('active');
+      }
+    })
+  }, {rootMargin:'-40% 0px -55% 0px', threshold:0});
+  sections.forEach(sec=>io.observe(sec));
+
+  // Theme toggle (light/dark)
+  const THEME_KEY='site-theme';
+  const themeBtn = $('#themeToggle');
+  function setTheme(mode){
+    if(mode==='dark'){ document.documentElement.style.colorScheme='dark'; }
+    else if(mode==='light'){ document.documentElement.style.colorScheme='light'; }
+    else { document.documentElement.style.removeProperty('color-scheme'); }
+    localStorage.setItem(THEME_KEY, mode);
+  }
+  const preferred = localStorage.getItem(THEME_KEY);
+  if(preferred) setTheme(preferred);
+  themeBtn.addEventListener('click', ()=>{
+    const cur = getComputedStyle(document.documentElement).colorScheme;
+    setTheme(cur==='dark' ? 'light' : 'dark');
+  });
+
+  // Back to top
+  const toTop = $('#toTop');
+  toTop.addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+  const ioTop = new IntersectionObserver(([en])=>{
+    toTop.style.display = en.isIntersecting ? 'none' : 'inline-grid';
+  });
+  ioTop.observe(document.body);
+
+  // Footer year
+  $('#year').textContent = new Date().getFullYear();
+
+  // ===== GitHub Projects =====
+  const USER = 'adrienheymans'; // ← change if needed
+  const repoGrid = $('#repoGrid');
+  let allRepos = [];
+
+  async function fetchRepos(){
+    repoGrid.innerHTML = '<div class="card">Loading repositories…</div>';
+    try{
+      // Basic: single page (100). Add pagination if you have more.
+      const res = await fetch(`https://api.github.com/users/${USER}/repos?per_page=100`);
+      const data = await res.json();
+      allRepos = Array.isArray(data) ? data : [];
+      renderRepos();
+      updateHeroMetrics(allRepos);
+      countStars(allRepos).then(total => $('#m-stars').textContent = total);
+    }catch(e){
+      repoGrid.innerHTML = '<div class="card">Failed to load repositories.</div>';
+      console.error(e);
+    }
+  }
+  fetchRepos();
+
+  function renderRepos(){
+    const q = $('#search').value.trim().toLowerCase();
+    const hideForks = $('#hideForks').checked;
+    const sort = $('#sort').value;
+
+    let repos = allRepos.slice();
+    if(hideForks) repos = repos.filter(r=>!r.fork);
+    if(q) repos = repos.filter(r =>
+      (r.name && r.name.toLowerCase().includes(q)) ||
+      (r.description && r.description.toLowerCase().includes(q))
+    );
+
+    if(sort==='updated') repos.sort((a,b)=> new Date(b.updated_at)-new Date(a.updated_at));
+    else if(sort==='created') repos.sort((a,b)=> new Date(b.created_at)-new Date(a.created_at));
+    else if(sort==='stars') repos.sort((a,b)=> b.stargazers_count-a.stargazers_count);
+    else if(sort==='name') repos.sort((a,b)=> a.name.localeCompare(b.name));
+
+    if(!repos.length){ repoGrid.innerHTML = '<div class="card">No repositories match your filters.</div>'; return; }
+
+    repoGrid.innerHTML = '';
+    repos.forEach(r=>{
+      const card = document.createElement('article');
+      card.className='card';
+      card.innerHTML = `
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px">
+          <a href="${r.html_url}" target="_blank" rel="noopener" style="font-weight:700">${r.name}</a>
+          <span class="tag">${r.language ?? '—'}</span>
+        </div>
+        <small>${r.description ? escapeHtml(r.description) : 'No description provided.'}</small>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
+          <span class="chip" title="Stars">★ ${r.stargazers_count}</span>
+          <span class="chip" title="Open issues">Issues: ${r.open_issues_count}</span>
+          <span class="chip" title="Last update">Updated: ${new Date(r.updated_at).toLocaleDateString()}</span>
+          ${r.homepage ? `<a class="btn" href="${r.homepage}" target="_blank" rel="noopener">Live Demo</a>`:''}
+        </div>
+      `;
+      repoGrid.appendChild(card);
+    });
+  }
+  $('#search').addEventListener('input', renderRepos);
+  $('#sort').addEventListener('change', renderRepos);
+  $('#hideForks').addEventListener('change', renderRepos);
+
+  // Hero metrics
+  function updateHeroMetrics(repos){
+    $('#m-repos').textContent = repos.filter(r=>!r.fork).length;
+    fetch(`https://api.github.com/users/${USER}`)
+      .then(r=>r.json()).then(u=> $('#m-followers').textContent = u.followers ?? '—')
+      .catch(()=>$('#m-followers').textContent='—');
+  }
+  async function countStars(repos){
+    // Sum star counts (client-side; not exact if >100 repos & paginated)
+    return repos.reduce((a,r)=>a+(r.stargazers_count||0),0);
+  }
+  function escapeHtml(s){return s.replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]))}
+
+  // ===== Playground: JSON Formatter =====
+  const jIn = $('#json-in'), jOut = $('#json-out');
+  $('#format-json').addEventListener('click', ()=>{
+    try{ jOut.textContent = JSON.stringify(JSON.parse(jIn.value || '{}'), null, 2); }
+    catch(e){ jOut.textContent = '⚠️ Invalid JSON: ' + e.message; }
+  });
+  $('#minify-json').addEventListener('click', ()=>{
+    try{ jOut.textContent = JSON.stringify(JSON.parse(jIn.value || '{}')); }
+    catch(e){ jOut.textContent = '⚠️ Invalid JSON: ' + e.message; }
+  });
+  $('#copy-json').addEventListener('click', async ()=>{
+    try{ await navigator.clipboard.writeText(jOut.textContent || ''); toast('Copied'); }
+    catch{ toast('Copy failed'); }
+  });
+
+  // ===== Playground: Password Strength =====
+  const pw = $('#pw'), bar = $('#barf'), lab = $('#pw-label');
+  const ruleLen = $('#rule-length'), ruleMix = $('#rule-mix'), ruleUni = $('#rule-unique');
+  function scorePassword(p){
+    let s=0;
+    if(p.length>=12){s+=1; ruleLen.style.opacity=1}else{ruleLen.style.opacity=.4}
+    if(/[a-z]/.test(p) && /[A-Z]/.test(p) && /\d/.test(p) && /[^A-Za-z0-9]/.test(p)){s+=1; ruleMix.style.opacity=1}else{ruleMix.style.opacity=.4}
+    if(!/(.)\1\1/.test(p)){s+=1; ruleUni.style.opacity=1}else{ruleUni.style.opacity=.4}
+    return s; // 0..3
+  }
+  pw.addEventListener('input', ()=>{
+    const s = scorePassword(pw.value);
+    const pct = [0, 35, 70, 100][s];
+    bar.style.width = pct+'%';
+    bar.style.background = s<2 ? '#ef4444' : (s===2 ? '#f59e0b' : 'var(--accent)');
+    lab.textContent = ['Very weak','Weak','Okay','Strong'][s];
+  });
+
+  // ===== Playground: Base64 =====
+  const bIn = $('#b64-in'), bOut = $('#b64-out');
+  $('#encode').addEventListener('click', ()=>{
+    try{ bOut.textContent = btoa(unescape(encodeURIComponent(bIn.value || ''))); }
+    catch(e){ bOut.textContent = '⚠️ Encode error: ' + e.message; }
+  });
+  $('#decode').addEventListener('click', ()=>{
+    try{ bOut.textContent = decodeURIComponent(escape(atob(bIn.value || ''))); }
+    catch(e){ bOut.textContent = '⚠️ Decode error: ' + e.message; }
+  });
+
+  // ===== Tabs =====
+  $$('.tab').forEach(t=>{
+    t.addEventListener('click', ()=>{
+      $$('.tab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      const id = t.dataset.tab;
+      $$('.panel').forEach(p=>p.classList.remove('active'));
+      $('#panel-'+id).classList.add('active');
+    })
+  });
+
+  // ===== Live UI Tweaks =====
+  $('#radius').addEventListener('input', e=>{
+    document.documentElement.style.setProperty('--radius', e.target.value+'px');
+  });
+
+  // ===== Toast =====
+  let toastTimer;
+  function toast(msg){
+    let el = document.getElementById('toast');
+    if(!el){
+      el = document.createElement('div'); el.id='toast';
+      el.style.cssText = 'position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--surface);border:1px solid var(--muted);box-shadow:var(--elev-2);padding:10px 14px;border-radius:12px;z-index:9999';
+      document.body.appendChild(el);
+    }
+    el.textContent = msg; el.style.opacity='1';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>{ el.style.opacity='0' }, 1200);
+  }
+</script>
+</body>
+</html>
