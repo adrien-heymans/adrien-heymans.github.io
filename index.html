@@ -1,587 +1,954 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Adrien Heymans — Projects & Playground</title>
-<meta name="color-scheme" content="light dark">
-
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Adrien Heymans — CS & AI @ uOttawa</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
 <style>
-  :root{
-    --bg: #f6f7fb;
-    --surface: #ffffff;
-    --text: #0f172a;
-    --subtext:#475569;
-    --primary:#2962ff;
-    --primary-ink:#ffffff;
-    --accent:#00c4b3;
-    --muted:#e2e8f0;
-    --chip:#eef2ff;
-    --radius: 16px;           /* live-tweakable via slider */
-    --elev-1: 0 1px 2px rgba(0,0,0,.06), 0 1px 1px rgba(0,0,0,.04);
-    --elev-2: 0 6px 16px rgba(0,0,0,.10), 0 2px 4px rgba(0,0,0,.06);
+  :root {
+    --clay-blue: #7eb8f7;
+    --clay-purple: #c4a4f7;
+    --clay-pink: #f7a4d4;
+    --clay-green: #a4f7c4;
+    --clay-yellow: #f7e6a4;
+    --clay-orange: #f7c4a4;
+    --clay-red: #f7a4a4;
+    --bg: #f0eaff;
+    --surface: rgba(255,255,255,0.6);
+    --text: #2d2250;
+    --text-muted: #7a6fa8;
+    --shadow-clay: 0 8px 32px rgba(120,80,200,0.18), 0 2px 8px rgba(120,80,200,0.10);
+    --shadow-clay-hover: 0 16px 48px rgba(120,80,200,0.28), 0 4px 16px rgba(120,80,200,0.14);
   }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#0b1220; --surface:#0f172a; --text:#e5e7eb; --subtext:#9ca3af;
-      --muted:#1f2937; --chip:#111827; --primary:#5b8aff; --primary-ink:#101522;
-      --elev-1: 0 1px 2px rgba(0,0,0,.35), 0 1px 1px rgba(0,0,0,.25);
-      --elev-2: 0 8px 20px rgba(0,0,0,.45), 0 2px 6px rgba(0,0,0,.35);
-    }
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
-    background: var(--bg); color: var(--text); line-height:1.6;
-  }
-  a{color:var(--primary); text-decoration:none}
-  a:hover{text-decoration:underline}
-  .container{max-width:1100px; margin-inline:auto; padding:0 20px}
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
 
-  /* Top App Bar */
-  header.navbar{
-    position: sticky; top:0; z-index:100;
-    backdrop-filter: saturate(120%) blur(8px);
-    background: color-mix(in srgb, var(--surface) 75%, transparent);
-    border-bottom: 1px solid var(--muted);
-  }
-  .nav-inner{display:flex; align-items:center; justify-content:space-between; height:64px}
-  .brand{display:flex; gap:.6rem; align-items:center; font-weight:700}
-  .brand .logo{
-    width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent));
-    box-shadow: var(--elev-1);
-  }
-  nav ul{display:flex; gap:16px; list-style:none; padding:0; margin:0}
-  nav a{padding:8px 10px; border-radius:12px}
-  nav a.active{background:var(--chip)}
-  .icon-btn{
-    border:0; background:transparent; width:40px; height:40px; border-radius:50%;
-    display:grid; place-items:center; cursor:pointer; position:relative; overflow:hidden;
-  }
-  /* Ripple */
-  .ripple{position:absolute; border-radius:50%; transform:scale(0); animation:ripple .6s linear; background: color-mix(in srgb, var(--text) 18%, transparent)}
-  @keyframes ripple{to{transform:scale(4); opacity:0}}
-
-  /* Hero */
-  section{scroll-margin-top:80px}
-  .hero{
-    padding:64px 0 24px;
-    background:
-      radial-gradient(1200px 400px at 50% -200px, color-mix(in srgb, var(--primary) 18%, transparent), transparent 70%),
-      linear-gradient(to bottom, color-mix(in srgb, var(--primary) 6%, transparent), transparent);
-  }
-  .hero .grid{display:grid; grid-template-columns: 1.2fr .8fr; gap:28px}
-  @media (max-width:900px){.hero .grid{grid-template-columns:1fr}}
-  .headline{font-size:clamp(28px, 4vw, 44px); line-height:1.15; margin:8px 0 8px}
-  .subhead{color:var(--subtext); max-width:60ch}
-  .chip{
-    display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px;
-    background:var(--chip); border:1px solid var(--muted); font-size:.9rem;
-  }
-  .hero-card{
-    background:var(--surface); border-radius:var(--radius); box-shadow:var(--elev-2); padding:18px;
-    display:flex; flex-direction:column; gap:14px; position:relative; overflow:hidden;
-  }
-  .avatar{width:64px; height:64px; border-radius:50%; box-shadow:var(--elev-1)}
-  .actions{display:flex; gap:10px; flex-wrap:wrap}
-  .btn{
-    display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:14px;
-    border:1px solid var(--muted); background:var(--surface); cursor:pointer; font-weight:600; position:relative; overflow:hidden;
-  }
-  .btn.primary{background:var(--primary); color:var(--primary-ink); border-color: color-mix(in srgb, var(--primary) 60%, var(--muted))}
-  .btn:hover{filter:brightness(1.02)}
-  .metrics{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px}
-  .metric{
-    background:var(--chip); border:1px solid var(--muted); border-radius:12px; padding:10px 12px; text-align:center
-  }
-  .metric .big{font-weight:800; font-size:1.15rem}
-
-  /* Section headings */
-  .section-title{font-size:1.6rem; margin:18px 0 6px}
-  .section-sub{color:var(--subtext); margin:0 0 18px}
-
-  /* Cards grid */
-  .grid{display:grid; gap:16px}
-  .cards{grid-template-columns: repeat(3,minmax(0,1fr))}
-  @media (max-width:1000px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media (max-width:650px){.cards{grid-template-columns:1fr}}
-
-  .card{
-    background:var(--surface); border:1px solid var(--muted); border-radius:var(--radius); box-shadow:var(--elev-1);
-    padding:16px; display:flex; flex-direction:column; gap:10px; position:relative; overflow:hidden
-  }
-  .card:hover{box-shadow:var(--elev-2)}
-  .card small{color:var(--subtext)}
-  .tag{display:inline-block; font-size:.72rem; padding:4px 8px; border-radius:999px; background:var(--chip); border:1px solid var(--muted); margin-right:6px}
-
-  /* Controls row */
-  .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:8px 0 10px}
-  .input, select{
-    padding:10px 12px; border-radius:12px; border:1px solid var(--muted); background:var(--surface); color:var(--text)
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
   }
 
-  /* Playground tabs */
-  .tabs{display:flex; gap:8px; margin:12px 0}
-  .tab{padding:8px 12px; border-radius:999px; border:1px solid var(--muted); background:var(--chip); cursor:pointer}
-  .tab.active{background:var(--primary); color:var(--primary-ink); border-color: color-mix(in srgb, var(--primary) 60%, var(--muted))}
-  .panel{display:none}
-  .panel.active{display:block}
-  textarea, .mono{
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  /* ── BACKGROUND BLOBS ── */
+  .bg-blobs {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    overflow: hidden;
   }
-  textarea{
-    width:100%; min-height:120px; padding:12px; border-radius:12px; border:1px solid var(--muted); background:var(--surface); color:var(--text)
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.35;
+    animation: blobFloat 12s ease-in-out infinite alternate;
   }
-  pre{
-    margin:0; padding:12px; background:var(--chip); border:1px solid var(--muted); border-radius:12px; overflow:auto
+  .blob1 { width:500px;height:500px;background:var(--clay-purple);top:-100px;left:-150px;animation-duration:14s; }
+  .blob2 { width:400px;height:400px;background:var(--clay-blue);top:40%;right:-100px;animation-duration:11s;animation-delay:2s; }
+  .blob3 { width:350px;height:350px;background:var(--clay-pink);bottom:-80px;left:30%;animation-duration:16s;animation-delay:4s; }
+  .blob4 { width:250px;height:250px;background:var(--clay-green);top:60%;left:10%;animation-duration:10s;animation-delay:1s; }
+  @keyframes blobFloat {
+    from { transform: translate(0,0) scale(1); }
+    to   { transform: translate(30px,40px) scale(1.08); }
   }
 
-  /* Footer + FAB */
-  footer{padding:28px 0 40px; color:var(--subtext); text-align:center}
-  .fab{
-    position:fixed; right:20px; bottom:20px; width:56px; height:56px; border-radius:50%;
-    background:var(--primary); color:var(--primary-ink); border:0; box-shadow:var(--elev-2); cursor:pointer
+  /* ── LAYOUT ── */
+  .container {
+    position: relative; z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── CLAY CARD BASE ── */
+  .clay-card {
+    background: rgba(255,255,255,0.62);
+    backdrop-filter: blur(18px);
+    border-radius: 28px;
+    box-shadow: var(--shadow-clay), inset 0 1px 0 rgba(255,255,255,0.8);
+    border: 1.5px solid rgba(255,255,255,0.75);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .clay-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-clay-hover), inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+
+  /* ── TOP ROW ── */
+  .top-row {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 24px;
+    margin-bottom: 24px;
+    align-items: start;
+  }
+
+  /* ── HERO CARD ── */
+  .hero-card {
+    padding: 44px 52px;
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+  }
+  .avatar-wrap {
+    flex-shrink: 0;
+    position: relative;
+    width: 130px; height: 130px;
+  }
+  .avatar-ring {
+    position: absolute; inset: -6px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--clay-purple), var(--clay-blue), var(--clay-pink));
+    animation: spinRing 6s linear infinite;
+    z-index: 0;
+  }
+  @keyframes spinRing {
+    to { transform: rotate(360deg); }
+  }
+  .avatar-img {
+    position: relative; z-index: 1;
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c4a4f7, #7eb8f7);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 54px;
+    box-shadow: 0 4px 16px rgba(120,80,200,0.25);
+    border: 4px solid white;
+    overflow: hidden;
+  }
+  .avatar-img img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
+  .hero-text { flex: 1; }
+  .hero-text .greeting {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .hero-text h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .hero-text h1 span {
+    background: linear-gradient(135deg, #9b59b6, #3498db);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero-tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 14px;
+  }
+  .tag {
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.6);
+    border: 1.5px solid rgba(255,255,255,0.7);
+  }
+  .tag-purple { background: #e8d8ff; color: #6b35c4; }
+  .tag-blue   { background: #d4eaff; color: #1a6bbf; }
+  .tag-green  { background: #d4ffea; color: #1a8f56; }
+  .tag-pink   { background: #ffd4ea; color: #bf1a6b; }
+  .bio-text {
+    margin-top: 14px;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #4a3f6b;
+    max-width: 100%;
+  }
+  .social-links { display:flex; gap:10px; margin-top:16px; }
+  .social-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 18px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.5);
+    border: 1.5px solid rgba(255,255,255,0.6);
+  }
+  .social-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.16); }
+  .btn-github { background: #2d2250; color: #fff; }
+  .btn-email  { background: #e8d8ff; color: #6b35c4; }
+
+  /* ── WIDGETS COLUMN ── */
+  .widgets-col { display:flex; flex-direction:column; gap:18px; }
+
+  /* ── CLOCK ── */
+  .clock-card { padding: 28px 24px; text-align:center; background: rgba(255,255,255,0.65); }
+  .clock-label {
+    font-size: 11px; text-transform:uppercase; letter-spacing:2px;
+    color: var(--text-muted); margin-bottom: 6px; font-weight: 700;
+  }
+  .clock-time {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.8rem; font-weight: 800;
+    color: var(--text);
+    letter-spacing: -1px;
+  }
+  .clock-date {
+    font-size: 13px; color: var(--text-muted); margin-top: 4px; font-weight: 600;
+  }
+  .clock-loc {
+    font-size: 12px; color: #a090c8; margin-top: 3px;
+    display: flex; align-items: center; justify-content:center; gap: 4px;
+  }
+
+  /* ── WEATHER ── */
+  .weather-card { padding: 24px; background: rgba(255,255,255,0.65); }
+  .weather-inner { display:flex; align-items:center; gap:14px; }
+  .weather-icon { font-size: 3rem; position:relative; }
+  .sun { display:inline-block; animation: sunSpin 8s linear infinite; }
+  .cloud-wrap { display:inline-block; animation: cloudBob 3s ease-in-out infinite; }
+  @keyframes sunSpin { to { transform: rotate(360deg); } }
+  @keyframes cloudBob {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-5px); }
+  }
+  .weather-info { flex:1; }
+  .weather-city { font-size:13px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:2px; }
+  .weather-temp { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; color:var(--text); }
+  .weather-desc { font-size:13px; color:var(--text-muted); font-weight:600; }
+
+  /* ── SECTIONS GRID ── */
+  .sections-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    padding: 22px 18px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .stat-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top:2px; }
+  .stat-card.s-blue .stat-num  { color: #1a6bbf; }
+  .stat-card.s-purple .stat-num{ color: #6b35c4; }
+  .stat-card.s-green .stat-num { color: #1a8f56; }
+  .stat-card.s-pink .stat-num  { color: #bf1a6b; }
+
+  /* ── PROJECTS ── */
+  .section-card { padding: 32px 32px; }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    display: inline-block;
+  }
+
+  .projects-list { display:flex; flex-direction:column; gap:12px; }
+  .project-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    border-radius: 18px;
+    text-decoration: none;
+    color: var(--text);
+    background: rgba(255,255,255,0.5);
+    border: 1.5px solid rgba(255,255,255,0.8);
+    box-shadow: 0 3px 12px rgba(120,80,200,0.10);
+    transition: all 0.25s ease;
+  }
+  .project-item:hover {
+    transform: translateX(6px);
+    box-shadow: 0 6px 24px rgba(120,80,200,0.18);
+    background: rgba(255,255,255,0.75);
+  }
+  .proj-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+  .proj-info { flex:1; min-width:0; }
+  .proj-name { font-weight: 800; font-size: 14px; white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+  .proj-desc { font-size: 12px; color: var(--text-muted); margin-top:2px; white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+  .proj-badges { display:flex; gap:5px; align-items:center; }
+  .lang-badge {
+    font-size: 11px; font-weight: 700; padding: 2px 10px;
+    border-radius: 50px;
+    white-space: nowrap;
+  }
+  .vis-badge {
+    font-size: 11px; padding: 2px 8px; border-radius: 50px;
+    background: rgba(0,0,0,0.06); color: var(--text-muted); font-weight: 600;
+  }
+  .proj-arrow { font-size: 18px; color: var(--text-muted); flex-shrink:0; }
+
+  /* ── SKILLS ── */
+  .skills-grid { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+  .skill-item {
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.5);
+    border: 1.5px solid rgba(255,255,255,0.8);
+  }
+  .skill-name { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .skill-bar {
+    height: 8px; border-radius: 50px;
+    background: rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  .skill-fill {
+    height: 100%; border-radius: 50px;
+    animation: fillBar 1.5s ease forwards;
+    transform-origin: left;
+  }
+  @keyframes fillBar { from { width:0; } }
+
+  /* ── SNAKE GAME ── */
+  .game-card { padding: 30px 32px; }
+  .game-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .game-score-wrap { display:flex; gap:14px; }
+  .score-box {
+    padding: 8px 18px; border-radius: 14px;
+    background: rgba(255,255,255,0.5);
+    border: 1.5px solid rgba(255,255,255,0.8);
+    font-weight: 800; font-size: 14px;
+  }
+  .score-box span { color: var(--text-muted); font-size: 12px; font-weight: 600; }
+  .game-area {
+    display: flex; justify-content: center;
+    margin-bottom: 14px;
+  }
+  #snakeCanvas {
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(120,80,200,0.2), inset 0 1px 0 rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.3);
+    border: 2px solid rgba(255,255,255,0.7);
+    cursor: pointer;
+  }
+  .game-controls {
+    display: flex; justify-content:center; gap: 10px; flex-wrap:wrap;
+    margin-bottom: 10px;
+  }
+  .game-btn {
+    padding: 10px 22px; border-radius: 50px; border: none; cursor: pointer;
+    font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  .game-btn:hover { transform:translateY(-2px); }
+  .btn-start { background: #a4f7c4; color: #1a8f56; }
+  .btn-pause { background: #f7e6a4; color: #8f6a1a; }
+  .btn-reset { background: #f7a4a4; color: #8f1a1a; }
+  .dpad {
+    display: grid; grid-template-columns: repeat(3,40px); grid-template-rows: repeat(3,40px);
+    gap: 4px; justify-content:center; margin-top: 8px;
+  }
+  .dpad-btn {
+    width:40px;height:40px; border-radius:12px; border:none; cursor:pointer;
+    font-size:16px; background:rgba(255,255,255,0.5); border:1.5px solid rgba(255,255,255,0.8);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.10);
+    transition: transform 0.1s, background 0.1s;
+    font-weight: 800;
+  }
+  .dpad-btn:active { transform:scale(0.9); background:rgba(200,170,255,0.4); }
+  .dpad-center { visibility:hidden; }
+  .game-hint { text-align:center; font-size:12px; color:var(--text-muted); font-weight:600; }
+
+  /* ── FOOTER ── */
+  .footer-card {
+    padding: 28px 40px;
+    display: flex; align-items:center; justify-content:space-between;
+    flex-wrap: wrap; gap: 12px;
+    margin-top: 24px;
+  }
+  .footer-name { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; }
+  .footer-copy { font-size:13px; color:var(--text-muted); }
+  .built-with {
+    display:flex; align-items:center; gap:6px;
+    font-size:12px; color:var(--text-muted); font-weight:600;
+  }
+  .heart { color:#f76a8a; animation: heartbeat 1.4s ease-in-out infinite; }
+  @keyframes heartbeat {
+    0%,100%{ transform:scale(1); } 50%{ transform:scale(1.3); }
+  }
+
+  /* ── ENTRANCE ANIMATIONS ── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 0.7s ease forwards;
+  }
+  @keyframes fadeUp {
+    to { opacity:1; transform:translateY(0); }
+  }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+  .delay-6 { animation-delay: 0.6s; }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:900px){
+    .top-row { grid-template-columns:1fr; }
+    .widgets-col { flex-direction:row; }
+    .sections-grid { grid-template-columns:1fr; }
+    .stats-row { grid-template-columns:repeat(2,1fr); }
+  }
+  @media(max-width:600px){
+    .hero-card { flex-direction:column; text-align:center; padding:28px 20px; }
+    .hero-text h1 { font-size:2rem; }
+    .hero-tags { justify-content:center; }
+    .social-links { justify-content:center; }
+    .widgets-col { flex-direction:column; }
+    .stats-row { grid-template-columns:repeat(2,1fr); }
+    .skills-grid { grid-template-columns:1fr; }
   }
 </style>
 </head>
 <body>
-<header class="navbar">
-  <div class="container nav-inner">
-    <div class="brand">
-      <div class="logo" aria-hidden="true"></div>
-      <span>Adrien Heymans</span>
-    </div>
-    <nav aria-label="Primary">
-      <ul>
-        <li><a href="#about" class="navlink active">About</a></li>
-        <li><a href="#projects" class="navlink">Projects</a></li>
-        <li><a href="#playground" class="navlink">Playground</a></li>
-        <li><a href="#contact" class="navlink">Contact</a></li>
-      </ul>
-    </nav>
-    <button id="themeToggle" class="icon-btn" title="Toggle theme" aria-label="Toggle theme">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </button>
-  </div>
-</header>
+<div class="bg-blobs">
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+  <div class="blob blob4"></div>
+</div>
 
-<!-- HERO / ABOUT -->
-<section id="about" class="hero">
-  <div class="container">
-    <div class="grid">
-      <div>
-        <span class="chip">👋 Hi, I’m Adrien — builder & PM</span>
-        <h1 class="headline">I ship clean interfaces, thoughtful data tools, and playful experiments.</h1>
-        <p class="subhead">Currently at uOttawa. I enjoy AI, dashboards, dev tooling, and making useful things fast.</p>
-        <div class="actions">
-          <a class="btn primary" href="https://github.com/adrienheymans" target="_blank" rel="noopener">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.1.82-.26.82-.58V21.2c-3.34.73-4.04-1.6-4.04-1.6-.55-1.38-1.35-1.75-1.35-1.75-1.1-.76.08-.75.08-.75 1.22.08 1.86 1.25 1.86 1.25 1.08 1.85 2.82 1.32 3.51 1 .11-.8.43-1.32.78-1.62-2.66-.3-5.46-1.33-5.46-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.5.12-3.12 0 0 1-.32 3.3 1.23a11.45 11.45 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.62.24 2.82.12 3.12.78.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.63-5.47 5.93.44.38.83 1.12.83 2.26v3.35c0 .32.21.69.83.57A12 12 0 0 0 12 .5Z"/></svg>
+<div class="container">
+
+  <!-- TOP ROW: HERO + WIDGETS -->
+  <div class="top-row">
+    <!-- HERO -->
+    <div class="clay-card hero-card fade-up">
+      <div class="avatar-wrap">
+        <div class="avatar-ring"></div>
+        <div class="avatar-img">
+          <img src="https://avatars.githubusercontent.com/u/59167619?v=4" alt="Adrien Heymans" onerror="this.style.display='none';this.parentNode.innerHTML='👨‍💻'"/>
+        </div>
+      </div>
+      <div class="hero-text">
+        <div class="greeting">👋 Hey there, I'm</div>
+        <h1>Adrien <span>Heymans</span></h1>
+        <div class="hero-tags">
+          <span class="tag tag-purple">🤖 AI &amp; ML</span>
+          <span class="tag tag-blue">🎓 uOttawa MSc</span>
+          <span class="tag tag-green">🍁 Ottawa, ON</span>
+          <span class="tag tag-pink">he/him</span>
+        </div>
+        <p class="bio-text">
+          2nd year Master's student in Computer Science, specialised in Artificial Intelligence
+          at the <strong>University of Ottawa</strong>. I love building cool things at the intersection
+          of machine learning, NLP, and data science. Originally from Belgium 🇧🇪, now living the
+          Canadian winter life 🥶 in Ottawa.
+        </p>
+        <div class="social-links">
+          <a class="social-btn btn-github" href="https://github.com/adrien-heymans" target="_blank">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.749 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
             GitHub
           </a>
-          <a class="btn" href="#projects">See projects</a>
-          <a class="btn" href="#playground">Try a widget</a>
+          <a class="social-btn btn-email" href="https://adrien-heymans.github.io" target="_blank">
+            🌐 Portfolio
+          </a>
         </div>
       </div>
-      <div class="hero-card">
-        <div style="display:flex; gap:12px; align-items:center">
-          <img class="avatar" src="https://avatars.githubusercontent.com/u/583231?v=4" alt="Profile avatar">
-          <div>
-            <strong>Based in Ottawa</strong><br>
-            <small>Building AI chatbots, Power BI, and clean UIs.</small>
+    </div>
+
+    <!-- WIDGETS -->
+    <div class="widgets-col">
+      <!-- CLOCK -->
+      <div class="clay-card clock-card fade-up delay-1">
+        <div class="clock-label">⏰ Local Time</div>
+        <div class="clock-time" id="clockTime">--:--:--</div>
+        <div class="clock-date" id="clockDate">Loading...</div>
+        <div class="clock-loc">📍 Ottawa, ON (UTC−5)</div>
+      </div>
+      <!-- WEATHER -->
+      <div class="clay-card weather-card fade-up delay-2">
+        <div class="weather-inner">
+          <div class="weather-icon" id="weatherIcon">
+            <span class="sun">☀️</span>
           </div>
-        </div>
-        <div class="metrics">
-          <div class="metric"><div class="big" id="m-repos">—</div><small>Public repos</small></div>
-          <div class="metric"><div class="big" id="m-stars">—</div><small>Total stars</small></div>
-          <div class="metric"><div class="big" id="m-followers">—</div><small>Followers</small></div>
-        </div>
-        <div>
-          <span class="tag">TypeScript</span>
-          <span class="tag">React-Native</span>
-          <span class="tag">Power BI</span>
-          <span class="tag">Node.js</span>
-          <span class="tag">AI</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PROJECTS -->
-<section id="projects">
-  <div class="container">
-    <h2 class="section-title">Projects</h2>
-    <p class="section-sub">A selection of public repos. Filter and sort to explore.</p>
-
-    <div class="controls">
-      <input id="search" class="input" placeholder="Search repositories…" />
-      <select id="sort">
-        <option value="updated">Sort: Recently updated</option>
-        <option value="created">Sort: Newest</option>
-        <option value="stars">Sort: Most stars</option>
-        <option value="name">Sort: Name A–Z</option>
-      </select>
-      <label class="chip" title="Hide forks">
-        <input type="checkbox" id="hideForks" checked style="accent-color:var(--primary); margin-right:6px"> Hide forks
-      </label>
-    </div>
-
-    <div id="repoGrid" class="grid cards" aria-live="polite">
-      <div class="card">Loading repositories…</div>
-    </div>
-  </div>
-</section>
-
-<!-- PLAYGROUND -->
-<section id="playground">
-  <div class="container">
-    <h2 class="section-title">Playground</h2>
-    <p class="section-sub">Tiny tools to try right in the page.</p>
-
-    <div class="tabs" role="tablist">
-      <button class="tab active" data-tab="json">JSON Formatter</button>
-      <button class="tab" data-tab="password">Password Strength</button>
-      <button class="tab" data-tab="base64">Base64 Encode/Decode</button>
-      <button class="tab" data-tab="theme">Live UI Tweaks</button>
-    </div>
-
-    <!-- JSON -->
-    <div class="panel active" id="panel-json" role="tabpanel" aria-label="JSON Formatter">
-      <div class="grid" style="grid-template-columns:1fr 1fr">
-        <div class="card">
-          <strong>Input (JSON)</strong>
-          <textarea id="json-in" placeholder='{"hello":"world","arr":[1,2,3]}'></textarea>
-          <div class="actions">
-            <button class="btn primary" id="format-json">Format</button>
-            <button class="btn" id="minify-json">Minify</button>
-            <button class="btn" id="copy-json">Copy output</button>
-          </div>
-        </div>
-        <div class="card">
-          <strong>Output</strong>
-          <pre id="json-out" class="mono" tabindex="0" aria-live="polite"></pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- Password -->
-    <div class="panel" id="panel-password" role="tabpanel" aria-label="Password Strength">
-      <div class="card">
-        <label><strong>Password</strong></label>
-        <input id="pw" class="input" type="password" placeholder="Type a password…" />
-        <div class="grid" style="grid-template-columns:1fr 3fr; gap:10px; align-items:center; margin-top:8px">
-          <div>Strength:</div>
-          <div>
-            <div id="bar" style="height:10px; border-radius:999px; background:var(--muted); overflow:hidden">
-              <div id="barf" style="height:100%; width:0; background:var(--accent)"></div>
-            </div>
-            <small id="pw-label" class="subtext">—</small>
-          </div>
-        </div>
-        <div style="margin-top:10px">
-          <span class="tag" id="rule-length">≥ 12 chars</span>
-          <span class="tag" id="rule-mix">Aa + 0-9 + symbol</span>
-          <span class="tag" id="rule-unique">No repeats</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Base64 -->
-    <div class="panel" id="panel-base64" role="tabpanel" aria-label="Base64">
-      <div class="grid" style="grid-template-columns:1fr 1fr">
-        <div class="card">
-          <strong>Text</strong>
-          <textarea id="b64-in" placeholder="Hello, world!"></textarea>
-          <div class="actions">
-            <button class="btn primary" id="encode">Encode →</button>
-            <button class="btn" id="decode">← Decode</button>
-          </div>
-        </div>
-        <div class="card">
-          <strong>Result</strong>
-          <pre id="b64-out" class="mono"></pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- Theme / UI Tweaks -->
-    <div class="panel" id="panel-theme" role="tabpanel" aria-label="Live UI Tweaks">
-      <div class="grid" style="grid-template-columns:1fr 1fr">
-        <div class="card">
-          <strong>Card corner radius</strong>
-          <input id="radius" type="range" min="6" max="28" value="16" style="width:100%">
-          <small>Live updates via CSS variable <code>--radius</code>.</small>
-        </div>
-        <div class="card">
-          <strong>Preview</strong>
-          <div class="grid cards">
-            <div class="card"><b>Tile</b><br><small>Radius mirrors the slider.</small></div>
-            <div class="card"><b>Tile</b><br><small>Material-ish shadows & hover.</small></div>
-            <div class="card"><b>Tile</b><br><small>Accessible contrast out of the box.</small></div>
+          <div class="weather-info">
+            <div class="weather-city">Ottawa, Canada</div>
+            <div class="weather-temp" id="weatherTemp">−8°C</div>
+            <div class="weather-desc" id="weatherDesc">Cold &amp; Snowy ❄️</div>
           </div>
         </div>
       </div>
     </div>
-
   </div>
-</section>
 
-<!-- CONTACT -->
-<section id="contact">
-  <div class="container">
-    <h2 class="section-title">Contact</h2>
-    <p class="section-sub">Open to interesting problems, collaborations, and good coffee.</p>
-    <div class="grid" style="grid-template-columns:1.2fr .8fr">
-      <div class="card">
-        <strong>Get in touch</strong>
-        <p>Email is best. I usually reply within a day.</p>
-        <div class="actions">
-          <a class="btn primary" href="mailto:adrien@example.com">Email me</a>
-          <a class="btn" href="https://www.linkedin.com/in/adrienheymans" target="_blank" rel="noopener">LinkedIn</a>
-          <a class="btn" href="https://github.com/adrienheymans" target="_blank" rel="noopener">GitHub</a>
-        </div>
+  <!-- STATS ROW -->
+  <div class="stats-row fade-up delay-2">
+    <div class="clay-card stat-card s-blue">
+      <div class="stat-num" id="countRepos">0</div>
+      <div class="stat-label">Repositories</div>
+    </div>
+    <div class="clay-card stat-card s-purple">
+      <div class="stat-num">2</div>
+      <div class="stat-label">Years MS</div>
+    </div>
+    <div class="clay-card stat-card s-green">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Followers</div>
+    </div>
+    <div class="clay-card stat-card s-pink">
+      <div class="stat-num" id="countLangs">0</div>
+      <div class="stat-label">Languages</div>
+    </div>
+  </div>
+
+  <!-- SECTIONS: PROJECTS + SKILLS -->
+  <div class="sections-grid fade-up delay-3">
+
+    <!-- PROJECTS -->
+    <div class="clay-card section-card">
+      <div class="section-title">
+        <span class="dot" style="background:var(--clay-blue)"></span>
+        Featured Projects
       </div>
-      <div class="card">
-        <strong>At a glance</strong>
-        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:6px">
-          <span class="tag">React</span><span class="tag">Node</span><span class="tag">TypeScript</span>
-          <span class="tag">Power BI</span><span class="tag">LLMs</span><span class="tag">APIs</span>
+      <div class="projects-list" id="projectsList">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <!-- SKILLS -->
+    <div class="clay-card section-card">
+      <div class="section-title">
+        <span class="dot" style="background:var(--clay-purple)"></span>
+        Skills &amp; Stack
+      </div>
+      <div class="skills-grid">
+        <div class="skill-item">
+          <div class="skill-name">Python 🐍</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:90%;background:linear-gradient(90deg,#7eb8f7,#6495ed)"></div></div>
         </div>
-        <small style="color:var(--subtext)">© <span id="year"></span> — CC BY-NC 4.0</small>
+        <div class="skill-item">
+          <div class="skill-name">Machine Learning 🤖</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:85%;background:linear-gradient(90deg,#c4a4f7,#9b59b6)"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name">NLP / LLMs 💬</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:80%;background:linear-gradient(90deg,#f7a4d4,#e91e8c)"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name">Java ☕</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:75%;background:linear-gradient(90deg,#f7c4a4,#e67e22)"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name">Data Science 📊</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:85%;background:linear-gradient(90deg,#a4f7c4,#2ecc71)"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name">SQL / PostgreSQL 🗄️</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:70%;background:linear-gradient(90deg,#f7e6a4,#f39c12)"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name">C++ ⚙️</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:65%;background:linear-gradient(90deg,#a4d4f7,#2980b9)"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name">HTML / PHP 🌐</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:72%;background:linear-gradient(90deg,#f7a4a4,#e74c3c)"></div></div>
+        </div>
       </div>
     </div>
   </div>
-</section>
 
-<footer>
-  <div class="container">
-    Crafted with semantic HTML, CSS variables, and vanilla JS. No dependencies.
+  <!-- SNAKE GAME -->
+  <div class="clay-card game-card fade-up delay-4">
+    <div class="game-header">
+      <div class="section-title" style="margin-bottom:0">
+        <span class="dot" style="background:var(--clay-green)"></span>
+        🐍 Claymorphic Snake
+      </div>
+      <div class="game-score-wrap">
+        <div class="score-box"><span>Score</span> <strong id="gameScore">0</strong></div>
+        <div class="score-box"><span>Best</span> <strong id="gameHigh">0</strong></div>
+      </div>
+    </div>
+    <div class="game-area">
+      <canvas id="snakeCanvas" width="400" height="300"></canvas>
+    </div>
+    <div class="game-controls">
+      <button class="game-btn btn-start" id="btnStart" onclick="startGame()">▶ Start</button>
+      <button class="game-btn btn-pause" id="btnPause" onclick="pauseGame()">⏸ Pause</button>
+      <button class="game-btn btn-reset" onclick="resetGame()">↺ Reset</button>
+    </div>
+    <div class="dpad">
+      <div></div>
+      <button class="dpad-btn" onclick="setDir(0,-1)">▲</button>
+      <div></div>
+      <button class="dpad-btn" onclick="setDir(-1,0)">◀</button>
+      <div class="dpad-center"></div>
+      <button class="dpad-btn" onclick="setDir(1,0)">▶</button>
+      <div></div>
+      <button class="dpad-btn" onclick="setDir(0,1)">▼</button>
+      <div></div>
+    </div>
+    <p class="game-hint" style="margin-top:10px">Use arrow keys or the D-Pad · Click canvas to start</p>
   </div>
-</footer>
 
-<button id="toTop" class="fab" title="Back to top" aria-label="Back to top">↑</button>
+  <!-- FOOTER -->
+  <div class="clay-card footer-card fade-up delay-5">
+    <div class="footer-name">Adrien Heymans</div>
+    <div class="built-with">Built with <span class="heart">❤️</span> &amp; claymorphism</div>
+    <div class="footer-copy">© 2025 · Ottawa, ON 🍁</div>
+  </div>
+
+</div>
 
 <script>
-  // ===== Helpers =====
-  const $ = s => document.querySelector(s);
-  const $$ = s => Array.from(document.querySelectorAll(s));
+// ── CLOCK ──
+function updateClock() {
+  const now = new Date();
+  const ottawa = new Date(now.toLocaleString('en-US', { timeZone: 'America/Toronto' }));
+  const h = String(ottawa.getHours()).padStart(2,'0');
+  const m = String(ottawa.getMinutes()).padStart(2,'0');
+  const s = String(ottawa.getSeconds()).padStart(2,'0');
+  document.getElementById('clockTime').textContent = `${h}:${m}:${s}`;
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('clockDate').textContent =
+    `${days[ottawa.getDay()]}, ${months[ottawa.getMonth()]} ${ottawa.getDate()}, ${ottawa.getFullYear()}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
 
-  // Ripple effect for buttons
-  function attachRipples(root=document){
-    root.addEventListener('click', e=>{
-      const t = e.target.closest('.btn,.icon-btn');
-      if(!t) return;
-      const r = document.createElement('span');
-      const rect = t.getBoundingClientRect();
-      const size = Math.max(rect.width, rect.height);
-      r.className='ripple'; r.style.width=r.style.height = size+'px';
-      r.style.left = (e.clientX-rect.left - size/2)+'px';
-      r.style.top  = (e.clientY-rect.top  - size/2)+'px';
-      t.appendChild(r);
-      setTimeout(()=>r.remove(), 600);
-    });
+// ── WEATHER (simulated Ottawa, March cold) ──
+const ottawaWeather = [
+  { temp: '-8°C', desc: 'Snowy ❄️', icon: '<span class="cloud-wrap">🌨️</span>' },
+  { temp: '-3°C', desc: 'Partly Cloudy ⛅', icon: '<span class="cloud-wrap">⛅</span>' },
+  { temp: '2°C',  desc: 'Overcast 🌥️', icon: '<span class="cloud-wrap">🌥️</span>' },
+  { temp: '-12°C',desc: 'Clear &amp; Frosty ❄️', icon: '<span class="sun">☀️</span>' },
+];
+const w = ottawaWeather[Math.floor(Math.random()*ottawaWeather.length)];
+document.getElementById('weatherIcon').innerHTML = w.icon;
+document.getElementById('weatherTemp').textContent = w.temp;
+document.getElementById('weatherDesc').innerHTML = w.desc;
+
+// ── COUNT UP ANIMATION ──
+function countUp(el, target, dur=1500) {
+  let start = 0, step = target / (dur/16);
+  const run = () => {
+    start = Math.min(start+step, target);
+    el.textContent = Math.floor(start);
+    if(start < target) requestAnimationFrame(run);
+  };
+  requestAnimationFrame(run);
+}
+setTimeout(() => {
+  countUp(document.getElementById('countRepos'), 20);
+  countUp(document.getElementById('countLangs'), 6);
+}, 600);
+
+// ── PROJECTS DATA ──
+const projects = [
+  {
+    name: 'adrien-heymans.github.io', desc: 'Personal portfolio website',
+    url: 'https://github.com/adrien-heymans/adrien-heymans.github.io',
+    lang: 'HTML', langColor: '#e34c26', icon: '🌐', iconBg: '#ffd4ea', vis: 'Public'
+  },
+  {
+    name: 'weather-prediction-project', desc: 'ML weather forecasting with Jupyter',
+    url: 'https://github.com/adrien-heymans/weather-prediction-project',
+    lang: 'Jupyter', langColor: '#DA5B0B', icon: '🌤️', iconBg: '#fff0d4', vis: 'Public'
+  },
+  {
+    name: 'CSI5386 — NLP', desc: 'Natural Language Processing coursework',
+    url: 'https://github.com/adrien-heymans/CSI5386',
+    lang: 'Jupyter', langColor: '#DA5B0B', icon: '💬', iconBg: '#e8d8ff', vis: 'Public'
+  },
+  {
+    name: 'CSI5155 — ML Class', desc: 'Machine Learning class repository',
+    url: 'https://github.com/adrien-heymans/CSI5155',
+    lang: 'HTML', langColor: '#e34c26', icon: '🤖', iconBg: '#d4eaff', vis: 'Public'
+  },
+  {
+    name: 'Novigrad', desc: 'Java game / simulation project',
+    url: 'https://github.com/adrien-heymans/Novigrad',
+    lang: 'Java', langColor: '#b07219', icon: '🎮', iconBg: '#d4ffea', vis: 'Public'
+  },
+  {
+    name: 'SEG2505 — Labs', desc: 'Software Engineering labs in Java',
+    url: 'https://github.com/adrien-heymans/SEG2505',
+    lang: 'Java', langColor: '#b07219', icon: '🔧', iconBg: '#fff0d4', vis: 'Public'
+  },
+  {
+    name: 'a2_SimpleChat', desc: 'Chat application built in Java',
+    url: 'https://github.com/adrien-heymans/a2_SimpleChat',
+    lang: 'Java', langColor: '#b07219', icon: '💬', iconBg: '#ffd4ea', vis: 'Public'
+  },
+  {
+    name: 'phpapp', desc: 'PHP app with PostgreSQL connectivity',
+    url: 'https://github.com/adrien-heymans/phpapp',
+    lang: 'PHP', langColor: '#4F5D95', icon: '🐘', iconBg: '#dce4ff', vis: 'Public'
+  },
+  {
+    name: 'github-slideshow', desc: 'GitHub training robot repo 🤖',
+    url: 'https://github.com/adrien-heymans/github-slideshow',
+    lang: 'HTML', langColor: '#e34c26', icon: '📽️', iconBg: '#e8d8ff', vis: 'Public'
+  },
+  {
+    name: 'leaderboard', desc: 'Competition leaderboard — DB design',
+    url: 'https://github.com/adrien-heymans/leaderboard',
+    lang: 'SQL', langColor: '#336791', icon: '🏆', iconBg: '#fff0d4', vis: 'Public'
+  },
+];
+
+const list = document.getElementById('projectsList');
+projects.forEach((p, i) => {
+  const el = document.createElement('a');
+  el.className = 'project-item fade-up';
+  el.style.animationDelay = (0.35 + i*0.05) + 's';
+  el.href = p.url;
+  el.target = '_blank';
+  el.rel = 'noopener';
+  el.innerHTML = `
+    <div class="proj-icon" style="background:${p.iconBg}">${p.icon}</div>
+    <div class="proj-info">
+      <div class="proj-name">${p.name}</div>
+      <div class="proj-desc">${p.desc}</div>
+    </div>
+    <div class="proj-badges">
+      <span class="lang-badge" style="background:${p.langColor}22;color:${p.langColor}">${p.lang}</span>
+      <span class="vis-badge">${p.vis}</span>
+    </div>
+    <div class="proj-arrow">→</div>
+  `;
+  list.appendChild(el);
+});
+
+// ── SNAKE GAME ──
+const canvas = document.getElementById('snakeCanvas');
+const ctx = canvas.getContext('2d');
+const CELL = 20;
+const COLS = canvas.width / CELL;   // 20
+const ROWS = canvas.height / CELL;  // 15
+
+let snake, dir, nextDir, food, score, highScore=0, gameLoop, running=false, paused=false;
+
+const CLAY_COLORS = ['#c4a4f7','#7eb8f7','#a4f7c4','#f7a4d4','#f7e6a4'];
+
+function rnd(max) { return Math.floor(Math.random()*max); }
+
+function placeFood() {
+  do { food = {x: rnd(COLS), y: rnd(ROWS)}; }
+  while (snake.some(s => s.x===food.x && s.y===food.y));
+}
+
+function initGame() {
+  snake = [{x:10,y:7},{x:9,y:7},{x:8,y:7}];
+  dir = {x:1,y:0}; nextDir = {x:1,y:0};
+  score = 0;
+  document.getElementById('gameScore').textContent = 0;
+  placeFood();
+  drawGame();
+}
+
+function drawRoundRect(x,y,w,h,r,fill,stroke) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+  if(fill){ ctx.fillStyle=fill; ctx.fill(); }
+  if(stroke){ ctx.strokeStyle=stroke; ctx.lineWidth=2; ctx.stroke(); }
+}
+
+function drawGame() {
+  // BG
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // grid dots
+  ctx.fillStyle = 'rgba(180,150,240,0.15)';
+  for(let x=0;x<COLS;x++) for(let y=0;y<ROWS;y++) {
+    ctx.beginPath();
+    ctx.arc(x*CELL+CELL/2, y*CELL+CELL/2, 1.5, 0, Math.PI*2);
+    ctx.fill();
   }
-  attachRipples();
 
-  // Smooth scroll & scrollspy
-  $$('.navlink').forEach(a=>{
-    a.addEventListener('click', ev=>{
-      ev.preventDefault();
-      document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth', block:'start'});
-    });
-  });
-  const sections = $$('#about,#projects,#playground,#contact');
-  const linksMap = Object.fromEntries($$('.navlink').map(a=>[a.getAttribute('href'), a]));
-  const io = new IntersectionObserver(entries=>{
-    entries.forEach(en=>{
-      if(en.isIntersecting){
-        $$('.navlink').forEach(x=>x.classList.remove('active'));
-        const id = '#'+en.target.id;
-        linksMap[id]?.classList.add('active');
-      }
-    })
-  }, {rootMargin:'-40% 0px -55% 0px', threshold:0});
-  sections.forEach(sec=>io.observe(sec));
+  // food (animated pulse)
+  const pulse = 1 + 0.1*Math.sin(Date.now()/200);
+  const fx = food.x*CELL + CELL/2, fy = food.y*CELL + CELL/2;
+  ctx.save();
+  ctx.translate(fx, fy);
+  ctx.scale(pulse, pulse);
+  ctx.translate(-fx, -fy);
+  // glow
+  const grad = ctx.createRadialGradient(fx,fy,0,fx,fy,16);
+  grad.addColorStop(0,'rgba(247,166,164,0.6)');
+  grad.addColorStop(1,'rgba(247,166,164,0)');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(fx, fy, 16, 0, Math.PI*2);
+  ctx.fill();
+  drawRoundRect(food.x*CELL+3, food.y*CELL+3, CELL-6, CELL-6, 5, '#f7a4a4', 'rgba(255,255,255,0.6)');
+  ctx.font = '12px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('🍎', fx, fy);
+  ctx.restore();
 
-  // Theme toggle (light/dark)
-  const THEME_KEY='site-theme';
-  const themeBtn = $('#themeToggle');
-  function setTheme(mode){
-    if(mode==='dark'){ document.documentElement.style.colorScheme='dark'; }
-    else if(mode==='light'){ document.documentElement.style.colorScheme='light'; }
-    else { document.documentElement.style.removeProperty('color-scheme'); }
-    localStorage.setItem(THEME_KEY, mode);
-  }
-  const preferred = localStorage.getItem(THEME_KEY);
-  if(preferred) setTheme(preferred);
-  themeBtn.addEventListener('click', ()=>{
-    const cur = getComputedStyle(document.documentElement).colorScheme;
-    setTheme(cur==='dark' ? 'light' : 'dark');
-  });
-
-  // Back to top
-  const toTop = $('#toTop');
-  toTop.addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
-  const ioTop = new IntersectionObserver(([en])=>{
-    toTop.style.display = en.isIntersecting ? 'none' : 'inline-grid';
-  });
-  ioTop.observe(document.body);
-
-  // Footer year
-  $('#year').textContent = new Date().getFullYear();
-
-  // ===== GitHub Projects =====
-  const USER = 'adrienheymans'; // ← change if needed
-  const repoGrid = $('#repoGrid');
-  let allRepos = [];
-
-  async function fetchRepos(){
-    repoGrid.innerHTML = '<div class="card">Loading repositories…</div>';
-    try{
-      // Basic: single page (100). Add pagination if you have more.
-      const res = await fetch(`https://api.github.com/users/${USER}/repos?per_page=100`);
-      const data = await res.json();
-      allRepos = Array.isArray(data) ? data : [];
-      renderRepos();
-      updateHeroMetrics(allRepos);
-      countStars(allRepos).then(total => $('#m-stars').textContent = total);
-    }catch(e){
-      repoGrid.innerHTML = '<div class="card">Failed to load repositories.</div>';
-      console.error(e);
-    }
-  }
-  fetchRepos();
-
-  function renderRepos(){
-    const q = $('#search').value.trim().toLowerCase();
-    const hideForks = $('#hideForks').checked;
-    const sort = $('#sort').value;
-
-    let repos = allRepos.slice();
-    if(hideForks) repos = repos.filter(r=>!r.fork);
-    if(q) repos = repos.filter(r =>
-      (r.name && r.name.toLowerCase().includes(q)) ||
-      (r.description && r.description.toLowerCase().includes(q))
+  // snake
+  snake.forEach((seg, i) => {
+    const ratio = i/snake.length;
+    const color = CLAY_COLORS[Math.floor(ratio*CLAY_COLORS.length)];
+    const pad = i===0 ? 1 : 2;
+    // shadow
+    ctx.save();
+    ctx.shadowColor = 'rgba(120,80,200,0.3)';
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetY = 3;
+    drawRoundRect(
+      seg.x*CELL+pad, seg.y*CELL+pad, CELL-pad*2, CELL-pad*2,
+      i===0 ? 8 : 6, color, 'rgba(255,255,255,0.5)'
     );
-
-    if(sort==='updated') repos.sort((a,b)=> new Date(b.updated_at)-new Date(a.updated_at));
-    else if(sort==='created') repos.sort((a,b)=> new Date(b.created_at)-new Date(a.created_at));
-    else if(sort==='stars') repos.sort((a,b)=> b.stargazers_count-a.stargazers_count);
-    else if(sort==='name') repos.sort((a,b)=> a.name.localeCompare(b.name));
-
-    if(!repos.length){ repoGrid.innerHTML = '<div class="card">No repositories match your filters.</div>'; return; }
-
-    repoGrid.innerHTML = '';
-    repos.forEach(r=>{
-      const card = document.createElement('article');
-      card.className='card';
-      card.innerHTML = `
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px">
-          <a href="${r.html_url}" target="_blank" rel="noopener" style="font-weight:700">${r.name}</a>
-          <span class="tag">${r.language ?? '—'}</span>
-        </div>
-        <small>${r.description ? escapeHtml(r.description) : 'No description provided.'}</small>
-        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
-          <span class="chip" title="Stars">★ ${r.stargazers_count}</span>
-          <span class="chip" title="Open issues">Issues: ${r.open_issues_count}</span>
-          <span class="chip" title="Last update">Updated: ${new Date(r.updated_at).toLocaleDateString()}</span>
-          ${r.homepage ? `<a class="btn" href="${r.homepage}" target="_blank" rel="noopener">Live Demo</a>`:''}
-        </div>
-      `;
-      repoGrid.appendChild(card);
-    });
-  }
-  $('#search').addEventListener('input', renderRepos);
-  $('#sort').addEventListener('change', renderRepos);
-  $('#hideForks').addEventListener('change', renderRepos);
-
-  // Hero metrics
-  function updateHeroMetrics(repos){
-    $('#m-repos').textContent = repos.filter(r=>!r.fork).length;
-    fetch(`https://api.github.com/users/${USER}`)
-      .then(r=>r.json()).then(u=> $('#m-followers').textContent = u.followers ?? '—')
-      .catch(()=>$('#m-followers').textContent='—');
-  }
-  async function countStars(repos){
-    // Sum star counts (client-side; not exact if >100 repos & paginated)
-    return repos.reduce((a,r)=>a+(r.stargazers_count||0),0);
-  }
-  function escapeHtml(s){return s.replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]))}
-
-  // ===== Playground: JSON Formatter =====
-  const jIn = $('#json-in'), jOut = $('#json-out');
-  $('#format-json').addEventListener('click', ()=>{
-    try{ jOut.textContent = JSON.stringify(JSON.parse(jIn.value || '{}'), null, 2); }
-    catch(e){ jOut.textContent = '⚠️ Invalid JSON: ' + e.message; }
-  });
-  $('#minify-json').addEventListener('click', ()=>{
-    try{ jOut.textContent = JSON.stringify(JSON.parse(jIn.value || '{}')); }
-    catch(e){ jOut.textContent = '⚠️ Invalid JSON: ' + e.message; }
-  });
-  $('#copy-json').addEventListener('click', async ()=>{
-    try{ await navigator.clipboard.writeText(jOut.textContent || ''); toast('Copied'); }
-    catch{ toast('Copy failed'); }
-  });
-
-  // ===== Playground: Password Strength =====
-  const pw = $('#pw'), bar = $('#barf'), lab = $('#pw-label');
-  const ruleLen = $('#rule-length'), ruleMix = $('#rule-mix'), ruleUni = $('#rule-unique');
-  function scorePassword(p){
-    let s=0;
-    if(p.length>=12){s+=1; ruleLen.style.opacity=1}else{ruleLen.style.opacity=.4}
-    if(/[a-z]/.test(p) && /[A-Z]/.test(p) && /\d/.test(p) && /[^A-Za-z0-9]/.test(p)){s+=1; ruleMix.style.opacity=1}else{ruleMix.style.opacity=.4}
-    if(!/(.)\1\1/.test(p)){s+=1; ruleUni.style.opacity=1}else{ruleUni.style.opacity=.4}
-    return s; // 0..3
-  }
-  pw.addEventListener('input', ()=>{
-    const s = scorePassword(pw.value);
-    const pct = [0, 35, 70, 100][s];
-    bar.style.width = pct+'%';
-    bar.style.background = s<2 ? '#ef4444' : (s===2 ? '#f59e0b' : 'var(--accent)');
-    lab.textContent = ['Very weak','Weak','Okay','Strong'][s];
-  });
-
-  // ===== Playground: Base64 =====
-  const bIn = $('#b64-in'), bOut = $('#b64-out');
-  $('#encode').addEventListener('click', ()=>{
-    try{ bOut.textContent = btoa(unescape(encodeURIComponent(bIn.value || ''))); }
-    catch(e){ bOut.textContent = '⚠️ Encode error: ' + e.message; }
-  });
-  $('#decode').addEventListener('click', ()=>{
-    try{ bOut.textContent = decodeURIComponent(escape(atob(bIn.value || ''))); }
-    catch(e){ bOut.textContent = '⚠️ Decode error: ' + e.message; }
-  });
-
-  // ===== Tabs =====
-  $$('.tab').forEach(t=>{
-    t.addEventListener('click', ()=>{
-      $$('.tab').forEach(x=>x.classList.remove('active'));
-      t.classList.add('active');
-      const id = t.dataset.tab;
-      $$('.panel').forEach(p=>p.classList.remove('active'));
-      $('#panel-'+id).classList.add('active');
-    })
-  });
-
-  // ===== Live UI Tweaks =====
-  $('#radius').addEventListener('input', e=>{
-    document.documentElement.style.setProperty('--radius', e.target.value+'px');
-  });
-
-  // ===== Toast =====
-  let toastTimer;
-  function toast(msg){
-    let el = document.getElementById('toast');
-    if(!el){
-      el = document.createElement('div'); el.id='toast';
-      el.style.cssText = 'position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--surface);border:1px solid var(--muted);box-shadow:var(--elev-2);padding:10px 14px;border-radius:12px;z-index:9999';
-      document.body.appendChild(el);
+    ctx.restore();
+    // shine
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.beginPath();
+    ctx.ellipse(seg.x*CELL+pad+4, seg.y*CELL+pad+3, 4, 3, -0.5, 0, Math.PI*2);
+    ctx.fill();
+    // eyes on head
+    if(i===0) {
+      const ex = dir.x===1?CELL-5:dir.x===-1?4:CELL/2;
+      const ey = dir.y===1?CELL-5:dir.y===-1?4:CELL/2;
+      const ex2 = dir.x===0 ? ex+4 : ex;
+      const ey2 = dir.y===0 ? ey+4 : ey;
+      [[ex-2*dir.y||ex2, ey+2*dir.x||ey2],[ex+2*dir.y||ex2-4, ey-2*dir.x||ey2-4]].forEach(([ox,oy]) => {
+        ctx.beginPath();
+        ctx.arc(seg.x*CELL+ox, seg.y*CELL+oy, 2.5, 0, Math.PI*2);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(seg.x*CELL+ox+0.5, seg.y*CELL+oy+0.5, 1.2, 0, Math.PI*2);
+        ctx.fillStyle = '#2d2250';
+        ctx.fill();
+      });
     }
-    el.textContent = msg; el.style.opacity='1';
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(()=>{ el.style.opacity='0' }, 1200);
+  });
+
+  // overlay on pause/game-over
+  if(!running && !paused) {
+    ctx.fillStyle = 'rgba(240,234,255,0.75)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#2d2250';
+    ctx.font = 'bold 22px Syne, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Click ▶ Start to play!', canvas.width/2, canvas.height/2);
+    ctx.font = '14px Nunito, sans-serif';
+    ctx.fillStyle = '#7a6fa8';
+    ctx.fillText('Use arrow keys or D-Pad', canvas.width/2, canvas.height/2+28);
   }
+  if(paused) {
+    ctx.fillStyle = 'rgba(240,234,255,0.65)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#2d2250';
+    ctx.font = 'bold 26px Syne, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('⏸ Paused', canvas.width/2, canvas.height/2);
+  }
+}
+
+function gameStep() {
+  dir = { ...nextDir };
+  const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+  // wall wrap
+  head.x = (head.x + COLS) % COLS;
+  head.y = (head.y + ROWS) % ROWS;
+  // self collision
+  if(snake.some(s=>s.x===head.x&&s.y===head.y)) {
+    endGame(); return;
+  }
+  snake.unshift(head);
+  if(head.x===food.x && head.y===food.y) {
+    score++;
+    document.getElementById('gameScore').textContent = score;
+    if(score>highScore){ highScore=score; document.getElementById('gameHigh').textContent=highScore; }
+    placeFood();
+  } else {
+    snake.pop();
+  }
+  drawGame();
+}
+
+function startGame() {
+  if(running) return;
+  if(!paused) initGame();
+  running=true; paused=false;
+  const speed = Math.max(80, 180 - score*5);
+  gameLoop = setInterval(gameStep, 130);
+  requestAnimationFrame(animFood);
+}
+function pauseGame() {
+  if(!running) return;
+  clearInterval(gameLoop);
+  running=false; paused=true;
+  drawGame();
+}
+function resetGame() {
+  clearInterval(gameLoop);
+  running=false; paused=false;
+  initGame();
+}
+function endGame() {
+  clearInterval(gameLoop);
+  running=false; paused=false;
+  ctx.fillStyle='rgba(240,234,255,0.8)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#e74c3c';
+  ctx.font='bold 26px Syne,sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('💀 Game Over!', canvas.width/2, canvas.height/2-14);
+  ctx.fillStyle='#2d2250';
+  ctx.font='16px Nunito,sans-serif';
+  ctx.fillText(`Score: ${score}  ·  Best: ${highScore}`, canvas.width/2, canvas.height/2+16);
+  ctx.fillStyle='#7a6fa8';
+  ctx.font='13px Nunito,sans-serif';
+  ctx.fillText('Click ▶ Start to play again', canvas.width/2, canvas.height/2+42);
+}
+function setDir(x,y) {
+  if(x===1&&dir.x===-1||x===-1&&dir.x===1) return;
+  if(y===1&&dir.y===-1||y===-1&&dir.y===1) return;
+  nextDir={x,y};
+  if(!running&&!paused) startGame();
+}
+document.addEventListener('keydown', e => {
+  const map = {ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]};
+  if(map[e.key]) { e.preventDefault(); const [x,y]=map[e.key]; setDir(x,y); }
+  if(e.key===' '){ e.preventDefault(); running ? pauseGame() : startGame(); }
+});
+canvas.addEventListener('click', ()=>{ if(!running) startGame(); });
+
+// food animation loop
+function animFood() { if(running) drawGame(); requestAnimationFrame(animFood); }
+
+// init
+initGame();
 </script>
 </body>
 </html>
