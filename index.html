@@ -86,15 +86,20 @@
 
   /* ── HERO CARD ── */
   .hero-card {
-    padding: 44px 52px;
+    padding: 40px 44px;
     display: flex;
-    gap: 40px;
-    align-items: flex-start;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .hero-top {
+    display: flex;
+    gap: 28px;
+    align-items: center;
   }
   .avatar-wrap {
     flex-shrink: 0;
     position: relative;
-    width: 130px; height: 130px;
+    width: 110px; height: 110px;
   }
   .avatar-ring {
     position: absolute; inset: -6px;
@@ -108,18 +113,17 @@
   }
   .avatar-img {
     position: relative; z-index: 1;
-    width: 130px; height: 130px;
+    width: 110px; height: 110px;
     border-radius: 50%;
     background: linear-gradient(135deg, #c4a4f7, #7eb8f7);
     display: flex; align-items: center; justify-content: center;
-    font-size: 54px;
+    font-size: 48px;
     box-shadow: 0 4px 16px rgba(120,80,200,0.25);
     border: 4px solid white;
     overflow: hidden;
   }
   .avatar-img img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
-  .hero-text { flex: 1; }
-  .hero-text .greeting {
+  .hero-name-block .greeting {
     font-family: 'Syne', sans-serif;
     font-size: 13px;
     text-transform: uppercase;
@@ -127,22 +131,21 @@
     color: var(--text-muted);
     margin-bottom: 6px;
   }
-  .hero-text h1 {
+  .hero-name-block h1 {
     font-family: 'Syne', sans-serif;
-    font-size: 2.6rem;
+    font-size: 3rem;
     font-weight: 800;
-    line-height: 1.1;
+    line-height: 1.05;
     color: var(--text);
-    margin-bottom: 8px;
   }
-  .hero-text h1 span {
+  .hero-name-block h1 span {
     background: linear-gradient(135deg, #9b59b6, #3498db);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+  .hero-body { display: flex; flex-direction: column; gap: 16px; }
   .hero-tags {
     display: flex; flex-wrap: wrap; gap: 8px;
-    margin-top: 14px;
   }
   .tag {
     padding: 5px 14px;
@@ -157,13 +160,12 @@
   .tag-green  { background: #d4ffea; color: #1a8f56; }
   .tag-pink   { background: #ffd4ea; color: #bf1a6b; }
   .bio-text {
-    margin-top: 14px;
-    font-size: 15px;
-    line-height: 1.8;
+    font-size: 16px;
+    line-height: 1.85;
     color: #4a3f6b;
     max-width: 100%;
   }
-  .social-links { display:flex; gap:10px; margin-top:16px; }
+  .social-links { display:flex; gap:10px; }
   .social-btn {
     display: inline-flex; align-items: center; gap: 7px;
     padding: 9px 18px;
@@ -439,15 +441,21 @@
   <div class="top-row">
     <!-- HERO -->
     <div class="clay-card hero-card fade-up">
-      <div class="avatar-wrap">
-        <div class="avatar-ring"></div>
-        <div class="avatar-img">
-          <img src="https://avatars.githubusercontent.com/u/59167619?v=4" alt="Adrien Heymans" onerror="this.style.display='none';this.parentNode.innerHTML='👨‍💻'"/>
+      <!-- top: avatar + name -->
+      <div class="hero-top">
+        <div class="avatar-wrap">
+          <div class="avatar-ring"></div>
+          <div class="avatar-img">
+            <img src="https://avatars.githubusercontent.com/u/59167619?v=4" alt="Adrien Heymans" onerror="this.style.display='none';this.parentNode.innerHTML='👨‍💻'"/>
+          </div>
+        </div>
+        <div class="hero-name-block">
+          <div class="greeting">👋 Hey there, I'm</div>
+          <h1>Adrien <span>Heymans</span></h1>
         </div>
       </div>
-      <div class="hero-text">
-        <div class="greeting">👋 Hey there, I'm</div>
-        <h1>Adrien <span>Heymans</span></h1>
+      <!-- bottom: tags, bio, links — full width -->
+      <div class="hero-body">
         <div class="hero-tags">
           <span class="tag tag-purple">🤖 AI &amp; ML</span>
           <span class="tag tag-blue">🎓 uOttawa MSc</span>
