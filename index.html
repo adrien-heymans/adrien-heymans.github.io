@@ -238,7 +238,7 @@
             <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
             LinkedIn
           </a>
-          <a class="btn bgn" href="mailto:aheymans.contact@icloud.com">✉️ Email me</a>
+          <a class="btn bgn" href="/cdn-cgi/l/email-protection#6809000d110509061b460b07061c090b1c28010b04071d0c460b0705">✉️ Email me</a>
           <a class="btn bgo" href="#" download>📄 Resume</a>
         </div>
       </div>
@@ -269,7 +269,7 @@
   <!-- PROJECTS + SKILLS -->
   <div class="two-col mb fu d3">
     <div class="card spad">
-      <div class="sttl"><span class="dot" style="background:var(--cb)"></span>Featured Projects</div>
+      <div class="sttl"><span class="dot" style="background:var(--cb)"></span>🛠️ Tools &amp; Projects</div>
       <div class="plist" id="projList"></div>
     </div>
     <div class="card spad">
@@ -444,7 +444,7 @@
     <div class="cttx">
       <div class="cttl">Let's connect! 👋</div>
       <div class="ctsb">Open to research collaborations, consulting, full-time EA &amp; AI roles, and conversations about AI governance &amp; enterprise automation.</div>
-      <a class="ctem" href="mailto:aheymans.contact@icloud.com">✉️ aheymans.contact@icloud.com</a>
+      <a class="ctem" href="/cdn-cgi/l/email-protection#91f0f9f4e8fcf0ffe2bff2feffe5f0f2e5d1f8f2fdfee4f5bff2fefc">✉️ <span class="__cf_email__" data-cfemail="e889808d918589869bc68b87869c898b9ca8818b84879d8cc68b8785">[email&#160;protected]</span></a>
     </div>
     <div class="btns" style="flex-direction:column;">
       <a class="btn bli" href="https://www.linkedin.com/in/adrien-heymans/" target="_blank" rel="noopener">
@@ -464,7 +464,7 @@
   </div>
 
 </div>
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // CLOCK
 function tick(){
   var o=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Toronto'}));
@@ -486,6 +486,7 @@ setTimeout(function(){cu(document.getElementById('cR'),20);},400);
 
 // PROJECTS
 var projs=[
+  {n:'Paste to Markdown',d:'Paste anything — instantly converts & selects your Markdown',url:'https://github.com/adrien-heymans/paste-to-markdown',demo:'https://adrien-heymans.github.io/paste-to-markdown/',lang:'HTML',lc:'#6b35c4',ic:'📝',bg:'#e8d8ff'},
   {n:'adrien-heymans.github.io',d:'Personal portfolio website',url:'https://github.com/adrien-heymans/adrien-heymans.github.io',demo:'https://adrien-heymans.github.io',lang:'HTML',lc:'#e34c26',ic:'🌐',bg:'#ffd4ea'},
   {n:'weather-prediction-project',d:'ML weather forecasting',url:'https://github.com/adrien-heymans/weather-prediction-project',demo:null,lang:'Jupyter',lc:'#DA5B0B',ic:'🌤️',bg:'#fff0d4'},
   {n:'CSI5386 — NLP',d:'Natural Language Processing coursework',url:'https://github.com/adrien-heymans/CSI5386',demo:null,lang:'Jupyter',lc:'#DA5B0B',ic:'💬',bg:'#e8d8ff'},
@@ -699,19 +700,4 @@ cv.addEventListener('touchstart',function(e){
 
 cv.addEventListener('touchend',function(e){
   e.preventDefault();
-  var dx=e.changedTouches[0].clientX-tx;
-  var dy=e.changedTouches[0].clientY-ty;
-  if(Math.abs(dx)<10&&Math.abs(dy)<10)return;
-  if(Math.abs(dx)>Math.abs(dy)){sDir(dx>0?1:-1,0);}
-  else{sDir(0,dy>0?1:-1);}
-},{passive:false});
-
-function animLoop(){
-  if(run)drawSnake();
-  requestAnimationFrame(animLoop);
-}
-
-initSnake();
-</script>
-</body>
-</html>
+  var dx=e.changedTouches[0].clientX-tx
